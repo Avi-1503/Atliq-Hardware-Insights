@@ -1,3 +1,6 @@
+Power BI Dashboard Link- https://app.powerbi.com/links/I68qcXAjLC?ctid=c6e549b3-5f45-4032-aae9-d4244dc5b2c4&pbi_source=linkShare&bookmarkGuid=1e99febe-0241-42af-89fb-f71f8e360f61
+
+
 AtliQ Hardware
 
 AtliQ Hardware manufactures and sells hardware like PC, Mouse, Printers etc to multiple companies across the world. AtliQ’s customers are companies like Croma, Amazon, Neptune, Staples, Walmart etc.
