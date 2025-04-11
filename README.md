@@ -75,9 +75,71 @@ The Executive view is a consolidated report which includes KIPs like NS, RC%, GM
 An executive view saves the time of senior stakeholders who do not want to go in depth about everything but also want to keep abreast with what’s going on in every department.
 
 Tools Used In Project
-MS Excel
-MySQL
-Power BI
-Power BI Service
-DAX Studio
+--MS Excel
+--MySQL
+--Power BI
+--Power BI Service
+--DAX Studio
+
+Learnings From Project
+--Power BI
+--Writing queries in MySQL 
+--Data Modelling
+--Dashboard Creation & Designing
+--Project Charter
+--Stakeholder Mapping
+--Going through P&L Statements
+--Working on business transactions like creating Profit %, Gross Margin %, Forecast %, comparison in sales from previous periods etc.(All listed below in the DAX Formulas list)
+The learning from this project was not limited to Power BI. The project has a business scenario where one has to go through the P & L statements where we needed to compare the performance of the products, product categories, markets, customers etc. From providing the stats of finance to the performance of products in different markets among different customers is measured and displayed on the dashboards.
+
+Below is the list of DAX formulas that I have used to create Key measures to build the report.
+
+--ABS Error =SUMX(DISTINCT(dim_date[date]),SUMX(DISTINCT(dim_product[product_code]), ABS([Net Error])))
+--ABS Error % = DIVIDE([ABS Error], [Forecast Qty], 0)
+--ABS Error LY = CALCULATE([ABS Error],SAMEPERIODLASTYEAR(dim_date[date]))
+--Ads & Promotions $ = SUM(‘fact_actuals_estimates'[ads_promotions])
+--Atliq MS % = CALCULATE([Market Share %], marketshare[manufacturer]=”atliq”)
+--BM Message = IF([NS BM $] = BLANK() || [GM % BM] = BLANK() || [NP % BM] = BLANK(), “BM Target is not available for the selected filters”, “”)
+--Customer / Product Filter Check = ISCROSSFILTERED(dim_product[product]) || ISFILTERED(dim_customer[customer])
+--Forecast Accuracy % = IF([ABS Error %]<>BLANK(), 1 – [ABS Error %], BLANK())
+--Forecast Accuracy % LY = CALCULATE([Forecast Accuracy %], SAMEPERIODLASTYEAR(dim_date[date]))
+--Forecast Qty =var lsalesdate = MAX(LastSalesMonth[LastSalesMonth])returnCALCULATE(SUM(fact_forecast_monthly[forecast_quantity]), fact_forecast_monthly[date]<=lsalesdate
+--Freight Cost $ = SUM(fact_actuals_estimates[Freight_cost])
+--GS $ = SUM(fact_actuals_estimates[gross_sales_amount])
+--Last Sales Month Home =“Sales Data Loaded Until : ” & FORMAT(MAX(LastSalesMonth[LastSalesMonth]), “MMM YY”)
+--Manufacturing Cost $ = SUM(fact_actuals_estimates[manufacturing_cost])
+--Market Share % = DIVIDE(SUM(marketshare[sales_$]),SUM(marketshare[total_market_sales_$]), 0)
+--Net Error = [Forecast Qty]-[Sales Qty]
+--Net Error % = DIVIDE([Net Error],[Forecast Qty],0)
+--Net Error LY = CALCULATE([Net Error],SAMEPERIODLASTYEAR(dim_date[date]))
+--Net Profit % = DIVIDE([Net Profit $],[NS $],0)
+--Net Profit % LY = CALCULATE([Net Profit %], SAMEPERIODLASTYEAR(dim_date[date]))
+--Net Profit $ = [GM $]+[Operational Expense $]
+--NIS $ = SUM(fact_actuals_estimates[net_invoice_sales_amount])
+--NP % BM =SWITCH(TRUE(),SELECTEDVALUE(‘Set BM'[ID])=1, [Net Profit % LY],SELECTEDVALUE(‘Set BM'[ID])=2, [NP Target %])
+--NP Target % = DIVIDE([NP Target $], SUM(NsGmTarget[np_target]), 0)
+--NP Target $ = SUM(NsGmTarget[np_target])
+--NS $ = SUM(fact_actuals_estimates[net_sales_amount])
+--NS $ LY = CALCULATE([NS $], SAMEPERIODLASTYEAR(dim_date[date]))
+--NS BM $ =SWITCH(TRUE(),SELECTEDVALUE(‘Set BM'[ID])=1,[NS $ LY],SELECTEDVALUE(‘Set BM'[ID])=2,[NS Target $])
+--NS Target $ =var tgt = SUM(NsGmTarget[ns_target])return IF([Customer / Product Filter Check], BLANK(), tgt)
+--Operational Expense $ = ([Ads & Promotions $]+[Other Operational Expense $])*-1
+--Other Cost $ = SUM(fact_actuals_estimates[other_cost])
+--Other Operational Expense $ = SUM(‘fact_actuals_estimates'[other_operational_expense])
+--Performance Visual Title = [Selected P & L Row] & ” Performance Over Time”
+--Post Invoice Deduction $ = SUM(fact_actuals_estimates[post_invoice_deductions_amount])
+--Post Invoice Other Deduction $ = SUM(fact_actuals_estimates[post_invoice_other_deductions_amount])
+--Pre Invoice Deduction $ = [GS $] – [NIS $]
+--Quantity = SUM(fact_actuals_estimates[Qty])
+--RC % = DIVIDE([NS $],CALCULATE([NS $],ALL(dim_market), ALL(dim_customer), ALL(dim_product)))
+--Risk = IF([Net Error]>0,”EI”, IF([Net Error]<0, “OOS”, BLANK()))
+--Sales Qty = CALCULATE([Quantity], fact_actuals_estimates[date]<=MAX(LastSalesMonth[LastSalesMonth]))
+--Sales Trend Title = “NS & GM % For ” & SELECTEDVALUE(dim_customer[customer])
+--Selected P & L Row = IF(HASONEVALUE(‘P & L Rows'[Description]), SELECTEDVALUE(‘P & L Rows'[Description]), “Net Sales”)
+--Top / Bottom N Title = “Top / Bottom Products & Customers By ” & [Selected P & L Row]
+--Total COGS $ = ‘Key Measure'[Freight Cost $] + ‘Key Measure'[Manufacturing Cost $] + ‘Key Measure'[Other Cost $]
+--Total Post Invoice Deduction = ‘Key Measure'[Post Invoice Deduction $] + ‘Key Measure'[Post Invoice Other Deduction $]
+--post_invoice_deductions_amount = var res = CALCULATE(MAX(post_invoice_deductions[discounts_pct]),RELATEDTABLE(post_invoice_deductions))return res*fact_actuals_estimates[net_invoice_sales_amount]
+--post_invoice_other_deductions_amount = var res = CALCULATE(MAX(post_invoice_deductions[other_deductions_pct]),RELATEDTABLE(post_invoice_deductions))return res*fact_actuals_estimates[net_invoice_sales_amount]
+
 
